@@ -405,3 +405,9 @@ FodyWeavers.xsd
 
 # Ignore all class files.
 *.class
+
+# Intellij
+.idea
+
+# C-Make
+cmake*
