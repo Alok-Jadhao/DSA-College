@@ -1,3 +1,0 @@
-D:/College studies/DSA/cmake-build-debug/CMakeFiles/DSA.dir
-D:/College studies/DSA/cmake-build-debug/CMakeFiles/edit_cache.dir
-D:/College studies/DSA/cmake-build-debug/CMakeFiles/rebuild_cache.dir
