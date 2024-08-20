@@ -1,7 +1,5 @@
 #include <iostream>
-#include <string>
 #include <algorithm>
-
 using namespace std;
 
 class Stack
@@ -10,10 +8,7 @@ class Stack
     int top;
 
 public:
-    Stack()
-    {
-        top = -1;
-    }
+    Stack() : top(-1) {}
 
     char peek()
     {
@@ -34,103 +29,100 @@ public:
     {
         if (isEmpty())
         {
-            cout << "Stack is empty";
             return -1;
         }
         return arr[top--];
     }
 
-    void push(int x)
+    void push(char x)
     {
         if (isFull())
         {
-            cout << "Stack is full";
             return;
         }
         arr[++top] = x;
     }
 };
 
-void swap(char a, char b)
+int precedence(char c)
 {
-    char temp = a;
-    a = b;
-    b = temp;
-}
-
-string reverse(string s)
-{
-    int n = s.length();
-    for (int i = 0; i < n / 2; ++i)
-    {
-        // Swap characters at position i and (n - i - 1)
-        swap(s[i], s[n - i - 1]);
-    }
-}
-
-int getPriority(char C)
-{
-    if (C == '-' || C == '+')
-        return 1;
-    else if (C == '*' || C == '/')
-        return 2;
-    else if (C == '^')
+    if (c == '^')
         return 3;
-    return 0;
+    else if (c == '*' || c == '/')
+        return 2;
+    else if (c == '+' || c == '-')
+        return 1;
+    else
+        return -1;
 }
 
-string prefix(string s)
+bool isOperator(char c)
 {
-    Stack stack;
-    string output, rev;
-    rev = reverse(s);
+    return (c == '+' || c == '-' || c == '*' || c == '/' || c == '^');
+}
 
-    for (int i = 0; s[i] != '\0'; i++)
+string infixToPrefix(string infix)
+{
+    Stack s;
+    string prefix;
+    reverse(infix.begin(), infix.end());
+    for (int i = 0; i < infix.length(); i++)
     {
-
-        if (!isdigit(s[i]))
+        if (infix[i] == '(')
         {
-            stack.push(s[i]);
+            infix[i] = ')';
         }
-        else
+        else if (infix[i] == ')')
         {
-            output = output + s[i];
+            infix[i] = '(';
         }
-
-        // if (isdigit(s[i]))
-        // {
-        //     stack.push(int(s[i] - '0'));
-        // }
-        // else
-        // {
-        //     int operand2 = stack.pop();
-        //     int operand1 = stack.pop();
-
-        //     switch (s[i])
-        //     {
-        //     case '+':
-        //         stack.push(operand1 + operand2);
-        //         break;
-        //     case '-':
-        //         stack.push(operand1 - operand2);
-        //         break;
-        //     case '*':
-        //         stack.push(operand1 * operand2);
-        //         break;
-        //     case '/':
-        //         stack.push(operand1 / operand2);
-        //         break;
-        //     default:
-        //         printf("Error: Invalid Operator\n");
-        //         break;
-        //     }
-        // }
     }
+
+    for (int i = 0; i < infix.length(); i++)
+    {
+        char c = infix[i];
+
+        if (isalpha(c))
+        {
+            prefix += c;
+        }
+        else if (c == '(')
+        {
+            s.push(c);
+        }
+        else if (c == ')')
+        {
+            while (!s.isEmpty() && s.peek() != '(')
+            {
+                prefix += s.pop();
+            }
+            s.pop();
+        }
+        else if (isOperator(c))
+        {
+            while (!s.isEmpty() && precedence(s.peek()) >= precedence(c))
+            {
+                prefix += s.pop();
+            }
+            s.push(c);
+        }
+    }
+
+    while (!s.isEmpty())
+    {
+        prefix += s.pop();
+    }
+
+    reverse(prefix.begin(), prefix.end());
+    return prefix;
 }
 
 int main()
 {
-    string s;
-    cin >> s;
-    cout << prefix(s) << endl;
+    string infix;
+    cout << "Enter an infix expression: ";
+    cin >> infix;
+    string prefix = infixToPrefix(infix);
+    cout << "Prefix expression: " << prefix << endl;
+    return 0;
 }
