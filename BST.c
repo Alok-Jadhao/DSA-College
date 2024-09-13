@@ -55,6 +55,14 @@ void postorderTraversal(Node* root) {
     }
 }
 
+Node* getSuccessor(Node* root) {
+    root = root->right;
+    while(root->left != NULL) {
+        root = root->left;
+    }
+    return root;
+}
+
 
 // Delete leaf and parent with one child.
 Node* deleteNode(Node* root, int data) {
@@ -69,17 +77,24 @@ Node* deleteNode(Node* root, int data) {
         root->right = deleteNode(root->right, data);
     }
     else {
+        // No child or only right child.
         if(root->left == NULL) {
             Node* temp = root->right;
             free(root);
             return temp;
         }
 
+        // Only left Child.
         if(root->right == NULL) {
             Node* temp = root->left;
             free(root);
             return temp;
         }
+
+        // Two children
+        Node* successor = getSuccessor(root);
+        root->data = successor->data;
+        root->right = deleteNode(root->right, successor->data);
         
     }
     return root;
@@ -131,66 +146,3 @@ int main() {
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-// void deleteNode(Node* root, int data) {
-//     if(root == NULL) {
-//         return;
-//     }
-//     if(data < root->data) {
-//         deleteNode(root->left, data);
-//     } else {
-//         deleteNode(root->right, data);
-//     }
-// }
-
-
-
-
-
-// struct Node* delNode(struct Node* root, int x) {
-
-//     // Base case
-//     if (root == NULL)
-//         return root;
-
-//     // If key to be searched is in a subtree
-//     if (root->key > x)
-//         root->left = delNode(root->left, x);
-//     else if (root->key < x)
-//         root->right = delNode(root->right, x);
-//     else {
-//         // If root matches with the given key
-
-//         // Cases when root has 0 children or 
-//         // only right child
-//         if (root->left == NULL) {
-//             struct Node* temp = root->right;
-//             free(root);
-//             return temp;
-//         }
-
-//         // When root has only left child
-//         if (root->right == NULL) {
-//             struct Node* temp = root->left;
-//             free(root);
-//             return temp;
-//         }
-
-//         // When both children are present
-//         struct Node* succ = getSuccessor(root);
-//         root->key = succ->key;
-//         root->right = delNode(root->right, succ->key);
-//     }
-//     return root;
-// }
