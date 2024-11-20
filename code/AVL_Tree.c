@@ -33,10 +33,10 @@ struct Node* rightRotate(struct Node* y) {
     struct Node* x = y->left;
     struct Node* T2 = x->right;
 
-    printf("RR Rotation applied");
 
     x->right = y;
     y->left = T2;
+
 
     y->height = 1 + (height(y->left) > height(y->right) ? height(y->left) : height(y->right));
     x->height = 1 + (height(x->left) > height(x->right) ? height(x->left) : height(x->right));
@@ -49,11 +49,10 @@ struct Node* leftRotate(struct Node* x) {
     struct Node* T2 = y->left;
 
 
-    printf("RL Rotation applied");
-
     y->left = x;
     x->right = T2;
 
+  
     x->height = 1 + (height(x->left) > height(x->right) ? height(x->left) : height(x->right));
     y->height = 1 + (height(y->left) > height(y->right) ? height(y->left) : height(y->right));
 
@@ -75,19 +74,29 @@ struct Node* insert(struct Node* node, int key) {
 
     int balance = getBalance(node);
 
-    
 
-    // Right Right Case
+    if (balance > 1 && key < node->left->key) {
+        printf("RR Rotation at key: %d\n", node->key);
+        return rightRotate(node);
+    }
+
+   
+    if (balance > 1 && key > node->left->key) {
+        printf("LR Rotation at key: %d\n", node->key);
+        node->left = leftRotate(node->left);
+        return rightRotate(node);
+    }
+
+  
     if (balance < -1 && key > node->right->key) {
-        printf("RR Rotation applied");
+        printf("LL Rotation at key: %d\n", node->key);
         return leftRotate(node);
     }
-        
 
-    // Right Left Case
+   
     if (balance < -1 && key < node->right->key) {
+        printf("RL Rotation at key: %d\n", node->key);
         node->right = rightRotate(node->right);
-        printf("RL Rotation applied");
         return leftRotate(node);
     }
 
@@ -97,7 +106,7 @@ struct Node* insert(struct Node* node, int key) {
 void inOrder(struct Node* root) {
     if (root != NULL) {
         inOrder(root->left);
-        printf("%d ", root->key);
+        printf("%d (Balance Factor: %d) ", root->key, getBalance(root));
         inOrder(root->right);
     }
 }
@@ -128,18 +137,3 @@ int main() {
 
     return 0;
 }
-
-
-
-/*
-// Left Left Case
-    if (balance > 1 && key < node->left->key)
-        return rightRotate(node);
-
-    // Left Right Case
-    if (balance > 1 && key > node->left->key) {
-        node->left = leftRotate(node->left);
-        return rightRotate(node);
-    }
-
-*/
